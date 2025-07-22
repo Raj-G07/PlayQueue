@@ -1,5 +1,5 @@
 import { authOptions } from "@/lib/auth-options";
-import db from "@/lib/db";
+import prisma from "@/lib/db";
 import {VoteSchema} from "@/lib/schema/vote.schema";
 import { getServerSession } from "next-auth";
 import {NextRequest, NextResponse} from "next/server";  
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-   await db.upvote.delete({
+   await prisma.upvote.delete({
     where:{
         userId_streamId: {
             userId: user.id,

@@ -5,6 +5,7 @@ import { JWT } from "next-auth/jwt";
 import { CredentialsSchema } from "./schema/credentials.schema";
 import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
+
 export const authOptions = {
   providers: [  
     GoogleProvider({

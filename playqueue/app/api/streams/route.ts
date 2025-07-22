@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {CreateStreamSchema} from "@/lib/schema/stream.schema";
-import db  from "@/lib/db";
+import prisma  from "@/lib/db";
 import { YT_REGEX } from "@/lib/utils";
 import youtubesearchapi from "youtube-search-api";
 import { getServerSession } from "next-auth";
@@ -42,11 +42,23 @@ export async function POST(req:NextRequest){
                 error: "Failed to fetch video details"
             }, { status: 400 });
         }
-        const stream = await db.stream.create({ data: {
+        const thumbnails = res.thumbnail.thumbnails;
+        thumbnails.sort((a:{width:number}, b:{width:number}) => a.width - b.width);
+        
+        const stream = await prisma.stream.create({ data: {
             creatorId: data.creatorId,
             url: data.url,
             extractedId: videoId,
             type: "Youtube",
+            title: res.title,
+            smallImg:
+          (thumbnails.length > 1
+            ? thumbnails[thumbnails.length - 2].url
+            : thumbnails[thumbnails.length - 1].url) ??
+          "https://cdn.pixabay.com/photo/2024/02/28/07/42/european-shorthair-8601492_640.jpg",
+        bigImg:
+          thumbnails[thumbnails.length - 1].url ??
+          "https://cdn.pixabay.com/photo/2024/02/28/07/42/european-shorthair-8601492_640.jpg",
             spaceId: data.spaceId
         }});
         return NextResponse.json({

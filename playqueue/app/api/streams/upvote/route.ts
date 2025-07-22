@@ -1,5 +1,5 @@
 import { authOptions } from "@/lib/auth-options";
-import db from "@/lib/db";
+import prisma from "@/lib/db";
 import { VoteSchema } from "@/lib/schema/vote.schema";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const upvote = await db.upvote.create({
+    const upvote = await prisma.upvote.create({
       data: {
         userId: user.id,
         streamId: data.streamId,
