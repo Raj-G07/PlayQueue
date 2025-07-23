@@ -1,8 +1,10 @@
 "use client"
 import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
-export function Appbar(){
+export function Appbar({showThemeSwitch=true, isSpectator=false}: {showThemeSwitch?: boolean, isSpectator?: boolean}) {
     const session = useSession();
+    const router = useRouter();
     return <div className="flex justify-between">
          <div>
            PlayQueue
