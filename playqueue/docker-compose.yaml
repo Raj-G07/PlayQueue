@@ -1,0 +1,51 @@
+services:
+   app:
+     container_name: playqueue-app
+     build:
+       context: ./
+       dockerfile: Dockerfile
+       env_file: .env
+     ports:
+       - "3000:3000"
+     depends_on:
+       postgres:
+          condition: service_healthy
+     develop:
+        watch:
+          - action: sync
+            path: ./
+            target: /usr/src/app
+            ignore:
+              - node_modules
+              - .git
+              - .github
+              - .vscode
+              - .env
+
+   postgres:
+    container_name: playqueue-postgres
+    image: postgres:alpine
+    restart: always
+    env_file: .env
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+   prisma-studio:
+     container_name: playqueue-prisma-studio
+     image: timothyjmiller/prisma-studio:latest
+     restart: unless-stopped
+     env_file: .env
+     ports:
+       - "5555:5555"
+     depends_on:
+       - app
+
+volumes:
+   postgres_data:
+     external: false
