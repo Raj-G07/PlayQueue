@@ -42,4 +42,6 @@ next-env.d.ts
 
 # But do NOT ignore .env.example
 !.env.example
+
+# Generated Prisma
 /app/generated/prisma
